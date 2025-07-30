@@ -25,6 +25,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -105,7 +106,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     private Gson mGson = new Gson();
 
     private int imgTransCount = 0;      //需要转化的图片数量
-    private Map<String,Bitmap> imgBitmap = new HashMap<>();
+    private Map<String, Bitmap> imgBitmap = new HashMap<>();
     private PrintH5Model mPrintH5Model;
 
     @Override
@@ -143,7 +144,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             };
         }
         if (printCallback == null) {
-            printCallback = new InnerResultCallback(){
+            printCallback = new InnerResultCallback() {
 
                 @Override
                 public void onRunResult(boolean isSuccess) throws RemoteException {
@@ -168,7 +169,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         }
         try {
             boolean result = InnerPrinterManager.getInstance().bindService(this, callback);
-            Log.d("syb","链接打印机结果"+ result);
+            Log.d("syb", "链接打印机结果" + result);
         } catch (InnerPrinterException e) {
             throw new RuntimeException(e);
         }
@@ -193,13 +194,13 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         mBinding.image.setOnClickListener(view -> {
 //            doCustomScan();
         });
-        hideHandler.sendEmptyMessageDelayed(1,2000);
+        hideHandler.sendEmptyMessageDelayed(1, 2000);
         mBinding.webview.getSettings().setDomStorageEnabled(true);
         mBinding.webview.getSettings().setJavaScriptEnabled(true);
         mBinding.webview.setWebViewClient(new MyWebViewClient());
         mBinding.webview.getSettings().setAllowFileAccess(true);
         mBinding.webview.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        mBinding.webview.addJavascriptInterface(new AndroidJsBridgeInterface(),"FMEPosClass");
+        mBinding.webview.addJavascriptInterface(new AndroidJsBridgeInterface(), "FMEPosClass");
         mBinding.webview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
     }
 
@@ -208,17 +209,17 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         mBinding.btnPrintText.setOnClickListener(view -> {
             PrintModel model = new PrintModel();
             model.type = PrintType.TYPE_TEXT;
-            TextData textData = new TextData("这是一段文字",24,1,true);
+            TextData textData = new TextData("这是一段文字", 24, 1, true);
             model.text = textData;
             printModelList.clear();
             printModelList.add(model);
             PrintH5Model printH5Model = new PrintH5Model(printModelList);
             print(printH5Model);
         });
-        mBinding.btnPrintCode.setOnClickListener(view ->  {
+        mBinding.btnPrintCode.setOnClickListener(view -> {
             PrintModel model = new PrintModel();
             model.type = PrintType.TYPE_BARCODE;
-            BarCodeData barCodeData = new BarCodeData("123456789",8,162,2,3);
+            BarCodeData barCodeData = new BarCodeData("123456789", 8, 162, 2, 3);
             model.barCode = barCodeData;
             printModelList.clear();
             printModelList.add(model);
@@ -226,10 +227,10 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             print(printH5Model);
         });
 
-        mBinding.btnPrintQrcode.setOnClickListener(view ->  {
+        mBinding.btnPrintQrcode.setOnClickListener(view -> {
             PrintModel model = new PrintModel();
             model.type = PrintType.TYPE_QRCODE;
-            QrCodeData qrCodeData = new QrCodeData("https://baidu.com",4,3);
+            QrCodeData qrCodeData = new QrCodeData("https://baidu.com", 4, 3);
             model.qrCode = qrCodeData;
             printModelList.clear();
             printModelList.add(model);
@@ -240,7 +241,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         mBinding.btnPrintImg.setOnClickListener(view -> {
             PrintModel model = new PrintModel();
             model.type = PrintType.TYPE_IMAGE;
-            ImageData imageData = new ImageData("https://blog-10039692.file.myqcloud.com/1494387499331_2961_1494387499640.png",1);
+            ImageData imageData = new ImageData("https://blog-10039692.file.myqcloud.com/1494387499331_2961_1494387499640.png", 1);
             model.image = imageData;
             printModelList.clear();
             printModelList.add(model);
@@ -251,7 +252,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         mBinding.btnPrintTemp.setOnClickListener(view -> {
             PrintH5Model printH5Model = new PrintH5Model(PrintDataUtils.getDiageoPrintData());
             String printJson = mGson.toJson(printH5Model);
-            Log.d("syb",printJson);
+            Log.d("syb", printJson);
             countImgTransform(printH5Model);
         });
 
@@ -282,9 +283,9 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     @Override
     public void initData(Bundle savedInstanceState) {
         mUrl = getIntent().getStringExtra("data");
-        isTest = getIntent().getBooleanExtra("isTest",false);
+        isTest = getIntent().getBooleanExtra("isTest", false);
         mBinding.boxPrint.setVisibility(isTest ? View.VISIBLE : View.GONE);
-        DataHelper.setStringSF(this,SpKey.H5_URL,mUrl);
+        DataHelper.setStringSF(this, SpKey.H5_URL, mUrl);
         initData();
     }
 
@@ -296,8 +297,8 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
                     public void onGranted(List<String> permissions, boolean all) {
                         if (!all) {
                             showMessage("扫码需要授权拍照权限,请去设置-应用中打开");
-                        }else {
-                            startActivityForResult(new Intent(CommonWebAct.this, CustomScanAct.class),ACT_CODE_CAMERA);
+                        } else {
+                            startActivityForResult(new Intent(CommonWebAct.this, CustomScanAct.class), ACT_CODE_CAMERA);
                         }
                     }
                 });
@@ -339,7 +340,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         intent.putExtra("IS_DATA_MATRIX_ENABLE", true);// 允许识读DataMatrix码，默认false
         intent.putExtra("IS_AZTEC_ENABLE", true);// 允许识读AZTEC码，默认false
         intent.putExtra("IS_Hanxin_ENABLE", false);// 允许识读Hanxin码，默认false
-        startActivityForResult(intent,ACT_CODE_CAMERA);
+        startActivityForResult(intent, ACT_CODE_CAMERA);
     }
 
     private class AndroidJsBridgeInterface {
@@ -355,7 +356,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 
         @JavascriptInterface
         public String getDeviceSn() {
-           return getSn();
+            return getSn();
         }
 
         @JavascriptInterface
@@ -389,7 +390,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ACT_CODE_CAMERA ) {
+        if (requestCode == ACT_CODE_CAMERA) {
             if (data != null) {
 //                Bundle bundle = data.getExtras();
 //                ArrayList result = (ArrayList) bundle.getSerializable("data");
@@ -402,7 +403,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 //                }
                 String result = data.getStringExtra("SCAN_RESULT");
                 callScanResultListener(result);
-            }else {
+            } else {
                 callScanResultListener("");
             }
 
@@ -450,17 +451,18 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             }
             imgNum += 1;
             imgTransCount += 1;
-            createBitmapFromUrl(printModel.image.url,printModel.image.width,printModel.image.height);
+            createBitmapFromUrl(printModel.image.url, printModel.image.width, printModel.image.height);
         }
         if (imgNum == 0) {
             print(mPrintH5Model);
         }
     }
 
-    public void print(PrintH5Model printH5Model){
+    public void print(PrintH5Model printH5Model) {
         if (printerService == null) return;
         if (printH5Model == null ||
-                printH5Model.printModelList == null || printH5Model.printModelList.size() == 0) return;
+                printH5Model.printModelList == null || printH5Model.printModelList.size() == 0)
+            return;
         try {
             printerService.enterPrinterBuffer(true);
             for (PrintModel model : printH5Model.printModelList) {
@@ -484,7 +486,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             }
 
             if (printH5Model.lineWrap != 0) {
-                printerService.lineWrap(printH5Model.lineWrap,printCallback);
+                printerService.lineWrap(printH5Model.lineWrap, printCallback);
             }
             if (printH5Model.autoCut) {
                 printerService.cutPaper(printCallback);
@@ -499,13 +501,13 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         TextData textData = model.text;
         try {
             if (textData.isBold) {
-                printerService.sendRAWData(new byte[]{0x1B,0x45,0x1},printCallback);
-            }else {
-                printerService.sendRAWData(new byte[]{0x1B,0x45,0x0},printCallback);
+                printerService.sendRAWData(new byte[]{0x1B, 0x45, 0x1}, printCallback);
+            } else {
+                printerService.sendRAWData(new byte[]{0x1B, 0x45, 0x0}, printCallback);
             }
-            printerService.setFontSize(textData.fontSize != 0 ? textData.fontSize : 24f,printCallback);
-            printerService.setAlignment(textData.alignment,printCallback);
-            printerService.printText(textData.text,printCallback);
+            printerService.setFontSize(textData.fontSize != 0 ? textData.fontSize : 24f, printCallback);
+            printerService.setAlignment(textData.alignment, printCallback);
+            printerService.printText(textData.text, printCallback);
             if (!textData.text.contains("\n")) {
                 printerService.commitPrinterBuffer();
             }
@@ -517,10 +519,10 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     public void printBarCode(PrintModel model) {
         BarCodeData barCodeData = model.barCode;
         try {
-            printerService.setAlignment(1,printCallback);
-            printerService.printBarCode(barCodeData.code,barCodeData.type,
-                    barCodeData.height,barCodeData.width,barCodeData.textPosition,printCallback);
-            printerService.setAlignment(0,printCallback);
+            printerService.setAlignment(1, printCallback);
+            printerService.printBarCode(barCodeData.code, barCodeData.type,
+                    barCodeData.height, barCodeData.width, barCodeData.textPosition, printCallback);
+            printerService.setAlignment(0, printCallback);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -529,10 +531,10 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     public void printQrCode(PrintModel model) {
         QrCodeData qrCodeData = model.qrCode;
         try {
-            printerService.setAlignment(1,printCallback);
-            printerService.printQRCode(qrCodeData.qrcode,qrCodeData.size,
-                    qrCodeData.errorLevel,printCallback);
-            printerService.setAlignment(0,printCallback);
+            printerService.setAlignment(1, printCallback);
+            printerService.printQRCode(qrCodeData.qrcode, qrCodeData.size,
+                    qrCodeData.errorLevel, printCallback);
+            printerService.setAlignment(0, printCallback);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -542,13 +544,13 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         ColumnData columnData = model.column;
         try {
             if (columnData.isBold) {
-                printerService.sendRAWData(new byte[]{0x1B,0x45,0x1},printCallback);
-            }else {
-                printerService.sendRAWData(new byte[]{0x1B,0x45,0x0},printCallback);
+                printerService.sendRAWData(new byte[]{0x1B, 0x45, 0x1}, printCallback);
+            } else {
+                printerService.sendRAWData(new byte[]{0x1B, 0x45, 0x0}, printCallback);
             }
-            printerService.setFontSize(columnData.size != 0 ? columnData.size : 16f,printCallback);
-            printerService.printColumnsString(columnData.texts,columnData.weights,
-                    columnData.aligns,printCallback);
+            printerService.setFontSize(columnData.size != 0 ? columnData.size : 16f, printCallback);
+            printerService.printColumnsString(columnData.texts, columnData.weights,
+                    columnData.aligns, printCallback);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -558,29 +560,33 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         ImageData imageData = model.image;
         if (imgBitmap.get(imageData.url) == null) return;
         try {
-            printerService.setAlignment(imageData.alignment,printCallback);
-            printerService.printBitmap(imgBitmap.get(imageData.url),printCallback);
+            printerService.setAlignment(imageData.alignment, printCallback);
+            printerService.printBitmap(imgBitmap.get(imageData.url), printCallback);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createBitmapFromUrl(String url,int width, int height) {
-        Glide.with(this).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+    private void createBitmapFromUrl(String url, int width, int height) {
+        Glide.with(this)
+                .asBitmap()
+                .load(url)
+                .apply(width > 0 && height > 0 ? new RequestOptions().override(width, height) : new RequestOptions())
+                .into(new CustomTarget<Bitmap>() {
 
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                imgTransCount -= 1;
-                imgBitmap.put(url,resource);
-                if (imgTransCount == 0) {
-                    print(mPrintH5Model);
-                }
-            }
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        imgTransCount -= 1;
+                        imgBitmap.put(url, resource);
+                        if (imgTransCount == 0) {
+                            print(mPrintH5Model);
+                        }
+                    }
 
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        });
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle clearing if necessary
+                    }
+                });
     }
 }

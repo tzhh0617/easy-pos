@@ -16,8 +16,8 @@ android {
         applicationId "com.freemud.app.easypos"
         minSdk rootProject.ext.android["minSdkVersion"]
         targetSdk rootProject.ext.android["targetSdkVersion"]
-        versionCode Integer.parseInt(project.VERSION_CODE)
-        versionName project.VERSION_NAME
+        versionCode 2
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
