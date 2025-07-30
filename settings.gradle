@@ -1,0 +1,71 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+pluginManagement {
+    repositories {
+
+        gradlePluginPortal()
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/groups/public/')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/releases/')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/jcenter')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/google')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/gradle-plugin')
+        }
+        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/groups/public/')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/releases/')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/jcenter')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/google')
+        }
+        maven {
+            allowInsecureProtocol(true)
+            url('http://maven.aliyun.com/nexus/content/repositories/gradle-plugin')
+        }
+        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+    }
+//
+//    dependencies {
+//        // 添加emas-services插件
+//        classpath 'com.aliyun.ams:emas-services:1.0.1'
+//    }
+}
+rootProject.name = "EasyPos"
+include ':app'
+include ':arms-imageloader-glide'
+include ':arms'
+include ':arms'
+include ':arms-imageloader-glide'
