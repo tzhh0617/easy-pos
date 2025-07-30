@@ -85,21 +85,21 @@ android {
         Dev {
             applicationIdSuffix ".dev"
             buildConfigField "String", "SERVER_URL", "\"https://epos.cn/\""
-            buildConfigField "String", "H5_BASE_URL", "\"http://helperapp.qa-ingress.sandload.cn\""
+            buildConfigField "String", "H5_BASE_URL", "\"https://stagepos.eywhisky.com/login?redirect=/\""
             manifestPlaceholders = [APP_NAME : "dev"]
         }
 
         Qa {
             applicationIdSuffix ".qa"
             buildConfigField "String", "SERVER_URL", "\"https://epos.cn/\""
-            buildConfigField "String", "H5_BASE_URL", "\"http://helperapp.qa-ingress.sandload.cn\""
+            buildConfigField "String", "H5_BASE_URL", "\"https://stagepos.eywhisky.com/login?redirect=/\""
             manifestPlaceholders = [APP_NAME : "qa"]
         }
 
         Pre {
             applicationIdSuffix ".pre"
             buildConfigField "String", "SERVER_URL", "\"https://epos.cn/\""
-            buildConfigField "String", "H5_BASE_URL", "\"http://helperapp.qa-ingress.sandload.cn\""
+            buildConfigField "String", "H5_BASE_URL", "\"https://stagepos.eywhisky.com/login?redirect=/\""
             manifestPlaceholders = [APP_NAME : "pre"]
         }
 

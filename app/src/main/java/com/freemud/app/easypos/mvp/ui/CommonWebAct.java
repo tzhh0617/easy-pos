@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -121,8 +122,27 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     }
 
     private void initData() {
+        XXPermissions.with(this)
+                .permission(Permission.READ_PHONE_STATE)
+                .request(new OnPermissionCallback() {
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+                        if (!all) {
+                            showMessage("应用需要获取您的设备号权限,请去设置-应用中打开");
+                        }else {
+                        }
+                    }
+                });
+
+
+        Uri uri = Uri.parse(BuildConfig.H5_BASE_URL)
+                .buildUpon()
+                .appendQueryParameter("t", String.valueOf(System.currentTimeMillis()))
+                .build();
+        mBinding.webview.loadUrl(uri.toString());
+
 //        mBinding.webview.loadUrl(BuildConfig.H5_BASE_URL + "?t="+System.currentTimeMillis());
-        mBinding.webview.loadUrl("https://" + mUrl + "?=" + System.currentTimeMillis());
+//        mBinding.webview.loadUrl("https://" + mUrl + "?=" + System.currentTimeMillis());
         registScreenReceiver();
         initPrint();
     }

@@ -51,7 +51,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".mvp.ui.LaunchAct" android:screenOrientation="landscape"
+        <activity android:name=".mvp.ui.CommonWebAct" android:screenOrientation="landscape"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden"
             >
@@ -61,7 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.ui.CommonWebAct" android:screenOrientation="landscape"/>
+<!--        <activity android:name=".mvp.ui.CommonWebAct" android:screenOrientation="landscape"/>-->
         <activity android:name=".mvp.ui.capture.CustomScanAct" android:screenOrientation="landscape" />
     </application>
 </manifest>
