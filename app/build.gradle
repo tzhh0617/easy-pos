@@ -13,7 +13,7 @@ android {
     compileSdk rootProject.ext.android["compileSdkVersion"]
 
     defaultConfig {
-        applicationId "com.freemud.app.easypos"
+        applicationId "com.eywhisky.stagepos"
         minSdk rootProject.ext.android["minSdkVersion"]
         targetSdk rootProject.ext.android["targetSdkVersion"]
         versionCode 2
@@ -28,10 +28,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('easypos.jks')
-            storePassword KEY_PWD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_STORE_PWD
+            storeFile file('key.jks')
+            storePassword "eywhisky123"
+            keyAlias "stagepos"
+            keyPassword "eywhisky123"
         }
     }
 

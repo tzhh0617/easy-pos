@@ -571,11 +571,15 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         Glide.with(this)
                 .asBitmap()
                 .load(url)
-                .apply(width > 0 && height > 0 ? new RequestOptions().override(width, height) : new RequestOptions())
                 .into(new CustomTarget<Bitmap>() {
 
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                        Bitmap resizedBitmap = resource;
+//                        if (width > 0 && height > 0) {
+//                            resizedBitmap = Bitmap.createScaledBitmap(resource, 171, 448, false);
+//                        }
+
                         imgTransCount -= 1;
                         imgBitmap.put(url, resource);
                         if (imgTransCount == 0) {
