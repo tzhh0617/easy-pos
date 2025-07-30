@@ -575,13 +575,13 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                        Bitmap resizedBitmap = resource;
-//                        if (width > 0 && height > 0) {
-//                            resizedBitmap = Bitmap.createScaledBitmap(resource, 171, 448, false);
-//                        }
+                        Bitmap resizedBitmap = resource;
+                        if (width > 0 && height > 0) {
+                            resizedBitmap = Bitmap.createScaledBitmap(resource, width, height, false);
+                        }
 
                         imgTransCount -= 1;
-                        imgBitmap.put(url, resource);
+                        imgBitmap.put(url, resizedBitmap);
                         if (imgTransCount == 0) {
                             print(mPrintH5Model);
                         }
