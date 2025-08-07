@@ -22,6 +22,8 @@ import androidx.annotation.NonNull;
 import com.freemud.app.easypos.databinding.ActivityCommonWebBinding;
 import com.freemud.app.easypos.mvp.utils.DeviceUtils;
 
+import org.json.JSONObject;
+
 /**
  * Created by shuyuanbo on 2023/5/9.
  * Description:
@@ -98,6 +100,18 @@ public class WebSubScreen extends Presentation {
 
     public String getSn() {
         return DeviceUtils.getSerialNumber(this.getContext());
+    }
+
+    public void sendDataToSubScreen(String data) {
+        if (mBinding != null) {
+            try {
+                final String safeData = JSONObject.quote(data);
+                String jsCode = "javascript:if(typeof onReceiveMainScreenData === 'function') { onReceiveMainScreenData(" + safeData + "); }";
+                mBinding.webview.post(() -> mBinding.webview.loadUrl(jsCode));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

@@ -413,7 +413,13 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         public boolean isSubScreenShowing() {
             return CommonWebAct.this.isSubScreenShowing();
         }
+
+        @JavascriptInterface
+        public void sendDataToSubScreen(String data) {
+             CommonWebAct.this.sendDataToSubScreen(data);
+        }
     }
+
 
     public class MyWebViewClient extends WebViewClient {
 
@@ -559,6 +565,12 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
      */
     public boolean isSubScreenShowing() {
         return mSubScreen != null && mSubScreen.isShowing();
+    }
+
+    public void sendDataToSubScreen(String data) {
+        if (mSubScreen != null && mSubScreen.isShowing()) {
+            mSubScreen.sendDataToSubScreen(data);
+        }
     }
 
     private void countImgTransform(PrintH5Model printH5Model) {
