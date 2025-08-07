@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -110,6 +112,11 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
     private Map<String, Bitmap> imgBitmap = new HashMap<>();
     private PrintH5Model mPrintH5Model;
 
+    // 副屏相关
+    private DisplayManager mDisplayManager;
+    private WebSubScreen mSubScreen;
+    private Display mSecondaryDisplay;
+
     @Override
     protected ActivityCommonWebBinding getContentView() {
         return ActivityCommonWebBinding.inflate(getLayoutInflater());
@@ -145,6 +152,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 //        mBinding.webview.loadUrl("https://" + mUrl + "?=" + System.currentTimeMillis());
         registScreenReceiver();
         initPrint();
+        initDisplayManager();
     }
 
     private void initPrint() {
@@ -385,6 +393,26 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             showMessage("调用本地打印功能");
             countImgTransform(printH5Model);
         }
+
+        @JavascriptInterface
+        public String isSubScreen() {
+            return "false";
+        }
+
+        @JavascriptInterface
+        public void openSubScreen(String url) {
+            CommonWebAct.this.openSubScreen(url);
+        }
+
+        @JavascriptInterface
+        public void closeSubScreen() {
+            CommonWebAct.this.closeSubScreen();
+        }
+
+        @JavascriptInterface
+        public boolean isSubScreenShowing() {
+            return CommonWebAct.this.isSubScreenShowing();
+        }
     }
 
     public class MyWebViewClient extends WebViewClient {
@@ -401,6 +429,7 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             return true;
         }
 
+        @SuppressLint("WebViewClientOnReceivedSslError")
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             handler.proceed();
@@ -436,8 +465,14 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
             unregisterReceiver(mScreenReceiver);
         }
         hideHandler.removeCallbacksAndMessages(null);
+        
+        // 清理副屏资源
+        if (mSubScreen != null && mSubScreen.isShowing()) {
+            mSubScreen.dismiss();
+            mSubScreen = null;
+        }
+        
         super.onDestroy();
-
     }
 
     private void openDrawer() {
@@ -452,6 +487,78 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
         } catch (RemoteException e) {
             showMessage("设备不支持钱箱开关功能");
         }
+    }
+
+    /**
+     * 初始化显示管理器
+     */
+    private void initDisplayManager() {
+        mDisplayManager = (DisplayManager) getSystemService(DISPLAY_SERVICE);
+        if (mDisplayManager != null) {
+            findSecondaryDisplay();
+        }
+    }
+
+    /**
+     * 查找副屏显示器
+     */
+    private void findSecondaryDisplay() {
+        Display[] displays = mDisplayManager.getDisplays();
+        for (Display display : displays) {
+            if ((display.getFlags() & Display.FLAG_SECURE) != 0
+                && (display.getFlags() & Display.FLAG_SUPPORTS_PROTECTED_BUFFERS) != 0
+                && (display.getFlags() & Display.FLAG_PRESENTATION) != 0) {
+                mSecondaryDisplay = display;
+                return;
+            }
+        }
+    }
+
+    /**
+     * 打开副屏并显示指定URL
+     * @param url 要在副屏显示的URL
+     */
+    public void openSubScreen(String url) {
+        if (mSecondaryDisplay == null) {
+            findSecondaryDisplay();
+        }
+        
+        if (mSecondaryDisplay == null) {
+            showMessage("未检测到副屏设备");
+            return;
+        }
+
+        if (mSubScreen != null && mSubScreen.isShowing()) {
+            // 如果副屏已经打开，切换URL
+            mSubScreen.switchUrl(url);
+            showMessage("副屏URL已切换");
+        } else {
+            // 创建并显示副屏
+            mSubScreen = new WebSubScreen(this, mSecondaryDisplay, url);
+            mSubScreen.show();
+            showMessage("副屏已打开");
+        }
+    }
+
+    /**
+     * 关闭副屏
+     */
+    public void closeSubScreen() {
+        if (mSubScreen != null && mSubScreen.isShowing()) {
+            mSubScreen.dismiss();
+            mSubScreen = null;
+            showMessage("副屏已关闭");
+        } else {
+            showMessage("副屏未打开");
+        }
+    }
+
+    /**
+     * 检查副屏是否正在显示
+     * @return 是否正在显示副屏
+     */
+    public boolean isSubScreenShowing() {
+        return mSubScreen != null && mSubScreen.isShowing();
     }
 
     private void countImgTransform(PrintH5Model printH5Model) {
