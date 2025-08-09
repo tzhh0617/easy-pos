@@ -44,14 +44,13 @@ public class WebSubScreen extends Presentation {
         mBinding = this.getContentView();
         setContentView(mBinding.getRoot());
         initView();
-        loadUrl(mUrl);
     }
 
     protected ActivityCommonWebBinding getContentView() {
         return ActivityCommonWebBinding.inflate(getLayoutInflater());
     }
 
-    private final Handler hideHandler = new Handler(Looper.myLooper()) {
+    private final Handler hideHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
@@ -68,6 +67,7 @@ public class WebSubScreen extends Presentation {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initView() {
+        mBinding.boxPrint.setVisibility(View.GONE);
         mBinding.image.setVisibility(View.VISIBLE);
         mBinding.image.setOnClickListener(view -> {
 //            doCustomScan();
@@ -82,14 +82,22 @@ public class WebSubScreen extends Presentation {
         mBinding.webview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
     }
 
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        loadUrl(mUrl);
+    }
+
     private void loadUrl(String url) {
-        if (url != null && !url.isEmpty()) {
-            mBinding.webview.loadUrl(url);
-        }
+        mBinding.webview.post(() -> {
+            if (url != null && !url.isEmpty()) {
+                this.mUrl = url;
+                mBinding.webview.loadUrl(url);
+            }
+        });
     }
 
     public void switchUrl(String newUrl) {
-        this.mUrl = newUrl;
         loadUrl(newUrl);
     }
 
@@ -107,7 +115,7 @@ public class WebSubScreen extends Presentation {
             try {
                 final String safeData = JSONObject.quote(data);
                 String jsCode = "javascript:if(typeof onReceiveMainScreenData === 'function') { onReceiveMainScreenData(" + safeData + "); }";
-                mBinding.webview.post(() -> mBinding.webview.loadUrl(jsCode));
+                mBinding.webview.loadUrl(jsCode);
             } catch (Exception e) {
                 e.printStackTrace();
             }

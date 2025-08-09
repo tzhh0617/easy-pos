@@ -401,12 +401,16 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 
         @JavascriptInterface
         public void openSubScreen(String url) {
-            CommonWebAct.this.openSubScreen(url);
+            CommonWebAct.this.runOnUiThread(() -> {
+                CommonWebAct.this.openSubScreen(url);
+            });
         }
 
         @JavascriptInterface
         public void closeSubScreen() {
-            CommonWebAct.this.closeSubScreen();
+            CommonWebAct.this.runOnUiThread(() -> {
+                CommonWebAct.this.closeSubScreen();
+            });
         }
 
         @JavascriptInterface
@@ -416,7 +420,9 @@ public class CommonWebAct extends MyBaseActivityNoP<ActivityCommonWebBinding> {
 
         @JavascriptInterface
         public void sendDataToSubScreen(String data) {
-             CommonWebAct.this.sendDataToSubScreen(data);
+            CommonWebAct.this.runOnUiThread(() -> {
+                CommonWebAct.this.sendDataToSubScreen(data);
+            });
         }
     }
 
