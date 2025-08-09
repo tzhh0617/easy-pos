@@ -49,7 +49,11 @@ public class MyApp extends BaseApplication {
         super.onCreate();
         mInstance = this;
         initFileXml();
-        CrashReport.initCrashReport(getApplicationContext(), "98aac4bbcd", true);
+
+        Context context = getApplicationContext();
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setAppReportDelay(500);
+        CrashReport.initCrashReport(context, "e4f5373a27", true, strategy);
     }
 
     public static MyApp getInstance() {
